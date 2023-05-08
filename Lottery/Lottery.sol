@@ -9,11 +9,12 @@ contract Lottery{
     RandomGenerator randomGenerator;
     address owner;
     struct Client {
-        address clientid;
+        address payable clientid;
         uint256 amount;
     }
 
-   
+    event AddClientEvent(address payable indexed id, uint bid);
+    event DrawWinner(address indexed winnerId);
 
     Client[] public clients;
     mapping(address => uint[]) public clintsAndTheirBids;
@@ -35,11 +36,13 @@ contract Lottery{
         _;
     }
 
-    function AddClient(address clientid,uint256 bid) public IsClient(clientid) {
+    function AddClient(address payable clientid,uint256 bid) public IsClient(clientid) {
         require(bid >= 0.01 ether, "insufficient amount");
         require(clientid != address(0),"invalid addres!");
+        require(clientid != owner,"Owner cannot participate");
         Client memory client = Client(clientid,bid);
         clients.push(client);
+        emit AddClientEvent(clientid,bid);
     }
 
     function MakeBid(address clientId, uint256 bid) public IsClient(clientId){
@@ -53,5 +56,6 @@ contract Lottery{
         Client memory winner = clients[randomClient];
         winner.amount += totalBids;
         totalBids = 0;
+        emit DrawWinner(winner.clientid);
     }
 }
