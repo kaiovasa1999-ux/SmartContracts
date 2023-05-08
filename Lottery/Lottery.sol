@@ -2,11 +2,12 @@
 
 pragma solidity ^0.8.1;
 
+import "./RandomGenerator.sol";
+
 
 contract Lottery{
-
+    RandomGenerator randomGenerator;
     address owner;
-
     struct Client {
         address clientid;
         uint256 amount;
@@ -48,7 +49,7 @@ contract Lottery{
     }
 
     function DrawTheWinner() public onlyOwner {
-        uint randomClient = uint(keccak256(abi.encodePacked(block.timestamp, block.difficulty))) % clients.length;
+        uint randomClient = randomGenerator.Radnom(clients.length);
         Client memory winner = clients[randomClient];
         winner.amount += totalBids;
         totalBids = 0;
