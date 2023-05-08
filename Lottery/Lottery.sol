@@ -36,6 +36,7 @@ contract Lottery{
 
     function AddClient(address clientid,uint256 bid) public IsClient(clientid) {
         require(bid >= 0.01 ether, "insufficient amount");
+        require(clientid != address(0),"invalid addres!");
         Client memory client = Client(clientid,bid);
         clients.push(client);
     }
@@ -44,5 +45,12 @@ contract Lottery{
         require(bid >= 0.01 ether, "insufficient amount");
         clintsAndTheirBids[clientId].push(bid);
         totalBids += bid;
+    }
+
+    function DrawTheWinner() public onlyOwner {
+        uint randomClient = uint(keccak256(abi.encodePacked(block.timestamp, block.difficulty))) % clients.length;
+        Client memory winner = clients[randomClient];
+        winner.amount += totalBids;
+        totalBids = 0;
     }
 }
