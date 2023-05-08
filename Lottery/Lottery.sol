@@ -3,18 +3,16 @@
 pragma solidity ^0.8.1;
 
 import "./RandomGenerator.sol";
+import "./ILottery.sol";
 
 
-contract Lottery{
+contract Lottery is ILottery{
     RandomGenerator randomGenerator;
     address owner;
     struct Client {
         address payable clientid;
         uint256 amount;
     }
-
-    event AddClientEvent(address payable indexed id, uint bid);
-    event DrawWinner(address indexed winnerId);
 
     Client[] public clients;
     mapping(address => uint[]) public clintsAndTheirBids;
@@ -45,11 +43,11 @@ contract Lottery{
         emit AddClientEvent(clientid,bid);
     }
 
-    function MakeBid(address clientId, uint256 bid) public IsClient(clientId){
-        require(bid >= 0.01 ether, "insufficient amount");
-        clintsAndTheirBids[clientId].push(bid);
-        totalBids += bid;
-    }
+    // function MakeBid(address clientId, uint256 bid) public IsClient(clientId){
+    //     require(bid >= 0.01 ether, "insufficient amount");
+    //     clintsAndTheirBids[clientId].push(bid);
+    //     totalBids += bid;
+    // }
 
     function DrawTheWinner() public onlyOwner {
         uint randomClient = randomGenerator.Radnom(clients.length);
