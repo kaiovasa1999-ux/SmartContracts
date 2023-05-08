@@ -18,6 +18,8 @@ contract Lottery{
     mapping(address => uint[]) public clintsAndTheirBids;
     mapping(address => bool) public IsClientExists;
 
+    uint totalBids = 0;
+
     constructor(){
         owner = msg.sender;
     }
@@ -38,8 +40,9 @@ contract Lottery{
         clients.push(client);
     }
 
-    function MakeBid(address clientId, uint256 bid) public{
-        require(!IsClientExists[clientId], "Cleint already exists");
+    function MakeBid(address clientId, uint256 bid) public IsClient(clientId){
+        require(bid >= 0.01 ether, "insufficient amount");
         clintsAndTheirBids[clientId].push(bid);
+        totalBids += bid;
     }
 }
