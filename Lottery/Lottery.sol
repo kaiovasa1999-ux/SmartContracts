@@ -43,11 +43,11 @@ contract Lottery is ILottery{
         emit AddClientEvent(clientid,bid);
     }
 
-    // function MakeBid(address clientId, uint256 bid) public IsClient(clientId){
-    //     require(bid >= 0.01 ether, "insufficient amount");
-    //     clintsAndTheirBids[clientId].push(bid);
-    //     totalBids += bid;
-    // }
+    function MakeBid(address clientId, uint256 bid) public IsClient(clientId){
+        require(bid >= 0.01 ether, "insufficient amount");
+        clintsAndTheirBids[clientId].push(bid);
+        totalBids += bid;
+    }
 
     function DrawTheWinner() public onlyOwner {
         uint randomClient = randomGenerator.Radnom(clients.length);
